@@ -19,6 +19,7 @@ while True:
     QueryImg=cv2.cvtColor(QueryImgBGR,cv2.COLOR_BGR2GRAY)
     queryKP,queryDesc=detector.detectAndCompute(QueryImg,None)
     matches=flann.knnMatch(queryDesc,trainDesc,k=2)
+    coringao = False
 
     goodMatch=[]
     for m,n in matches:
@@ -35,6 +36,16 @@ while True:
         h,w=trainImg.shape
         trainBorder=np.float32([[[0,0],[0,h-1],[w-1,h-1],[w-1,0]]])
         queryBorder=cv2.perspectiveTransform(trainBorder,H)
+        #encontrando as coordenas medias de X para poder utilizar no cor_estados_gira
+        #pegamos as coordenas dos 4 pontos do quadrado em volta da figura
+        x00 = queryBorder[0][0][0]
+        x01 = queryBorder[0][1][0]
+        x10 = queryBorder[0][2][0]
+        x11 = queryBorder[0][3][0]
+        PontomedioX = (x00+x01+x10+x11)/4
+        media = (PontomedioX, 0)
+        coringao = True
+
         cv2.polylines(QueryImgBGR,[np.int32(queryBorder)],True,(0,255,0),5)
     cv2.imshow('result',QueryImgBGR)
     if cv2.waitKey(10)==ord('q'):
