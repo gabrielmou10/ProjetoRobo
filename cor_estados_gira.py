@@ -3,7 +3,7 @@
 
 __author__ = ["Rachel P. B. Moraes", "Igor Montagner", "Fabio Miranda"]
 
-
+#Importando os módulos necessários
 import rospy
 import numpy as np
 import tf
@@ -38,11 +38,11 @@ tolerancia_area = 20000
 
 # Atraso máximo permitido entre a imagem sair do Turbletbot3 e chegar no laptop do aluno
 atraso = 1.5
-check_delay = False # Só usar se os relógios ROS da Raspberry e do Linux desktop estiverem sincronizados
+check_delay = True # Só usar se os relógios ROS da Raspberry e do Linux desktop estiverem sincronizados
 
 
 
-
+#Rodandos os frames
 def roda_todo_frame(imagem):
 	print("frame")
 	global cv_image
@@ -72,6 +72,7 @@ def roda_todo_frame(imagem):
 
 ## Classes - estados
 
+#Robo girando(balançando) até alinhar com a cor
 
 class Girando(smach.State):
     def __init__(self):
@@ -96,6 +97,9 @@ class Girando(smach.State):
 			velocidade_saida.publish(vel)
 			return 'alinhou'
 
+# Se o valor da média está entre o valor do centro e a tolerancia então o robo alinha
+
+# Robo centralizando a cor e seguindo em direção
 
 class Centralizado(smach.State):
     def __init__(self):
