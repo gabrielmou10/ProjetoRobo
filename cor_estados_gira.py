@@ -18,6 +18,7 @@ import smach
 import smach_ros
 
 import cormodule
+import corinthians
 
 bridge = CvBridge()
 
@@ -55,7 +56,7 @@ def roda_todo_frame(imagem):
 	lag = now-imgtime
 	delay = lag.secs
 	if delay > atraso and check_delay==True:
-		return 
+		return
 	try:
 		antes = time.clock()
 		cv_image = bridge.compressed_imgmsg_to_cv2(imagem, "bgr8")
@@ -64,7 +65,7 @@ def roda_todo_frame(imagem):
 		cv2.imshow("Camera", cv_image)
 	except CvBridgeError as e:
 		print('ex', e)
-	
+
 
 
 
@@ -108,6 +109,15 @@ class Centralizado(smach.State):
     def execute(self, userdata):
 		global velocidade_saida
 
+		#Aqui verificamos qual objeto esta na tela, dando prioridade para o simbolo do corinthians
+		#A velocidade muda de acordo com o objeto na tela
+		if coringao == True:
+			velocidade_reta = Vector3(1,0,0)
+		elif caixa_cor == True:
+			velocidade_reta = Vector3(-1,0,0)
+		else:
+			velocidade_reta = Vector3(0,0,0)
+
 		if media is None:
 			return 'alinhou'
 		if  math.fabs(media[0]) > math.fabs(centro[0] + tolerancia_x):
@@ -115,7 +125,7 @@ class Centralizado(smach.State):
 		if math.fabs(media[0]) < math.fabs(centro[0] - tolerancia_x):
 			return 'alinhando'
 		else:
-			vel = Twist(Vector3(0, 0, 0), Vector3(0, 0, 0))
+			vel = Twist(velocidade_reta, Vector3(0, 0, 0))
 			velocidade_saida.publish(vel)
 			return 'alinhado'
 
@@ -125,7 +135,7 @@ def main():
 	global buffer
 	rospy.init_node('cor_estados')
 
-	# Para usar a webcam 
+	# Para usar a webcam
 	#recebedor = rospy.Subscriber("/cv_camera/image_raw/compressed", CompressedImage, roda_todo_frame, queue_size=1, buff_size = 2**24)
 	recebedor = rospy.Subscriber("/raspicam_node/image/compressed", CompressedImage, roda_todo_frame, queue_size=10, buff_size = 2**24)
 
@@ -137,10 +147,10 @@ def main():
 	# Open the container
 	with sm:
 	    # Add states to the container
-	    #smach.StateMachine.add('LONGE', Longe(), 
-	    #                       transitions={'ainda_longe':'ANDANDO', 
+	    #smach.StateMachine.add('LONGE', Longe(),
+	    #                       transitions={'ainda_longe':'ANDANDO',
 	    #                                    'perto':'terminei'})
-	    #smach.StateMachine.add('ANDANDO', Andando(), 
+	    #smach.StateMachine.add('ANDANDO', Andando(),
 	    #                       transitions={'ainda_longe':'LONGE'})
 	    smach.StateMachine.add('GIRANDO', Girando(),
 	                            transitions={'girando': 'GIRANDO',
