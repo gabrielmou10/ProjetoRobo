@@ -97,9 +97,9 @@ class Girando(smach.State):
 			velocidade_saida.publish(vel)
 			return 'alinhou'
 
-# Se o valor da média está entre o valor do centro e a tolerancia então o robo alinha
+# Se o valor da média(centro de todos os pontos) está entre o valor do centro da visão do robo e a tolerancia então o robo alinha
 
-# Robo centralizando a cor e seguindo em direção
+# Robo centralizando a cor com a sua visão e seguindo em direção
 
 class Centralizado(smach.State):
     def __init__(self):
@@ -119,7 +119,7 @@ class Centralizado(smach.State):
 			velocidade_saida.publish(vel)
 			return 'alinhado'
 
-# main
+# main - executa tudo
 def main():
 	global velocidade_saida
 	global buffer

@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding:utf-8 -*-
 
-
+# Importando módulos necessários
 import rospy
 import numpy as np
 import tf
@@ -16,6 +16,7 @@ import smach
 import smach_ros
 
 
+#Função que indentifica a cor desejada 
 def identifica_cor(frame):
 	'''
 	Segmenta o maior objeto cuja cor é parecida com cor_h (HUE da cor, no espaço HSV).
@@ -26,6 +27,7 @@ def identifica_cor(frame):
 	# Precisamos dividir o inRange em duas partes para fazer a detecção 
 	# do vermelho:
 	frame_hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
 
 	cor_menor = np.array([0, 50, 50])
 	cor_maior = np.array([8, 255, 255])
