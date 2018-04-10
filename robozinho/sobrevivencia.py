@@ -14,19 +14,44 @@ def scaneou(dado):
 	#print("Leituras:")
 	dists = (np.array(dado.ranges).round(decimals=2))
 
-#distâncias a direita
-	for distancia in dists[310:]:
+#distâncias a frenta direita
+	for distancia in dists[330:]:
 		if distancia < 0.5 and distancia != 0.0:
 			print("Gira pra direita")
 			vel = Twist(Vector3(0, 0, 0), Vector3(0, 0, 1))
 		velocidade_saida.publish(vel)
 
-#distâncias a esquerda
-	for distancia in dists[:50]:
+#distâncias a frente esquerda
+	for distancia in dists[:30]:
 		if distancia < 0.5 and distancia != 0.0:
 			print("Gira pra esquerda")
 			vel = Twist(Vector3(0, 0, 0), Vector3(0, 0, -1))
 		velocidade_saida.publish(vel)
+
+#distâncias a esquerda
+	for distancia in dists[30:90]:
+		if distancia < 0.5 and distancia != 0.0:
+			print("Gira pra esquerda")
+			vel = Twist(Vector3(0, 0, 0), Vector3(0, 0, -3))
+		velocidade_saida.publish(vel)
+
+#distâncias a direita
+	for distancia in dists[270:330]:
+		if distancia < 0.5 and distancia != 0.0:
+			print("Gira pra esquerda")
+			vel = Twist(Vector3(0, 0, 0), Vector3(0, 0, 3))
+		velocidade_saida.publish(vel)
+
+#distâncias atras
+	for distancia in dists[90:270]:
+		if distancia < 0.5 and distancia != 0.0:
+			print("Gira pra esquerda")
+			vel = Twist(Vector3(1, 0, 0), Vector3(0, 0,0))
+		velocidade_saida.publish(vel)
+
+
+
+
 
 if __name__=="__main__":
 
