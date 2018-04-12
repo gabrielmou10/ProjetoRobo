@@ -51,6 +51,8 @@ def roda_todo_frame(imagem):
     global media
     global centro
     global area
+    global coringao
+    global caixa_cor
 
     now = rospy.get_rostime()
     imgtime = imagem.header.stamp
@@ -61,7 +63,10 @@ def roda_todo_frame(imagem):
     try:
         antes = time.clock()
         cv_image = bridge.compressed_imgmsg_to_cv2(imagem, "bgr8")
-        media, centro, area = cormodule.identifica_cor(cv_image)
+        media, centro, area, caixa_cor = cormodule.identifica_cor(cv_image)
+        media_corin, coringao = corinthians.procuracor(cv_image)
+        if media[0] == 0:
+            media = media_corin
         depois = time.clock()
         cv2.imshow("Camera", cv_image)
     except CvBridgeError as e:

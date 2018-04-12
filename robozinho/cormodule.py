@@ -79,4 +79,4 @@ def identifica_cor(frame):
 
     centro = (frame.shape[0]//2, frame.shape[1]//2)
 
-    return media, centro, maior_contorno_area
+    return media, centro, maior_contorno_area, caixa_cor
