@@ -41,6 +41,18 @@ tolerancia_area = 20000
 # Atraso máximo permitido entre a imagem sair do Turbletbot3 e chegar no laptop do aluno
 atraso = 1.1E9
 check_delay = True # Só usar se os relógios ROS da Raspberry e do Linux desktop estiverem sincronizados
+#Variaveis do corinthians.py
+N_MATCH_COUNT=10
+
+detector= cv2.xfeatures2d.SIFT_create()
+
+
+FLANN_INDEX_KDITREE=0
+flannParam=dict(algorithm=FLANN_INDEX_KDITREE,tree=5)
+flann=cv2.FlannBasedMatcher(flannParam,{})
+
+trainImg=cv2.imread("coringao.png",0)
+trainKP,trainDesc=detector.detectAndCompute(trainImg,None)
 
 
 
@@ -94,14 +106,17 @@ class Girando(smach.State):
         if  math.fabs(media[0]) > math.fabs(centro[0] + tolerancia_x):
             vel = Twist(Vector3(0, 0, 0), Vector3(0, 0, -ang_speed))
             velocidade_saida.publish(vel)
+            rospy.sleep(0.5)
             return 'girando'
         if math.fabs(media[0]) < math.fabs(centro[0] - tolerancia_x):
             vel = Twist(Vector3(0, 0, 0), Vector3(0, 0, ang_speed))
             velocidade_saida.publish(vel)
+            rospy.sleep(0.5)
             return 'girando'
         else:
             vel = Twist(Vector3(0, 0, 0), Vector3(0, 0, 0))
             velocidade_saida.publish(vel)
+            rospy.sleep(0.5)
             return 'alinhou'
 
 # Se o valor da média(centro de todos os pontos) está entre o valor do centro da visão do robo e a tolerancia então o robo alinha
@@ -133,6 +148,7 @@ class Centralizado(smach.State):
         else:
             vel = Twist(velocidade_reta, Vector3(0, 0, 0))
             velocidade_saida.publish(vel)
+            rospy.sleep(0.5)
             return 'alinhado'
 
 # main - executa tudo
