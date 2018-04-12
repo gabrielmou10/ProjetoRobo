@@ -21,6 +21,9 @@ import cormodule
 import corinthians
 import sobreviencia
 
+coringao = False
+caixa_cor = False
+
 bridge = CvBridge()
 
 cv_image = None
