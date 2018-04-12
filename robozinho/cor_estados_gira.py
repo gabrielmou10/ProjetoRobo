@@ -88,14 +88,17 @@ class Girando(smach.State):
         if  math.fabs(media[0]) > math.fabs(centro[0] + tolerancia_x):
             vel = Twist(Vector3(0, 0, 0), Vector3(0, 0, -ang_speed))
             velocidade_saida.publish(vel)
+			rospy.sleep(0.5)
             return 'girando'
         if math.fabs(media[0]) < math.fabs(centro[0] - tolerancia_x):
             vel = Twist(Vector3(0, 0, 0), Vector3(0, 0, ang_speed))
             velocidade_saida.publish(vel)
+			rospy.sleep(0.5)
             return 'girando'
         else:
             vel = Twist(Vector3(0, 0, 0), Vector3(0, 0, 0))
             velocidade_saida.publish(vel)
+			rospy.sleep(0.5)
             return 'alinhou'
 
 # Se o valor da média(centro de todos os pontos) está entre o valor do centro da visão do robo e a tolerancia então o robo alinha
@@ -127,6 +130,7 @@ class Centralizado(smach.State):
         else:
             vel = Twist(velocidade_reta, Vector3(0, 0, 0))
             velocidade_saida.publish(vel)
+			rospy.sleep(0.5)
             return 'alinhado'
 
 # main - executa tudo
