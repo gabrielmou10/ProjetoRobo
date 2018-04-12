@@ -19,7 +19,7 @@ import smach_ros
 
 import cormodule
 import corinthians
-import sobreviencia
+import sobrevivencia
 
 coringao = False
 caixa_cor = False
