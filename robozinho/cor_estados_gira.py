@@ -45,26 +45,26 @@ check_delay = True # Só usar se os relógios ROS da Raspberry e do Linux deskto
 
 #Rodandos os frames
 def roda_todo_frame(imagem):
-	print("frame")
-	global cv_image
-	global media
-	global centro
-	global area
+    print("frame")
+    global cv_image
+    global media
+    global centro
+    global area
 
-	now = rospy.get_rostime()
-	imgtime = imagem.header.stamp
-	lag = now-imgtime
-	delay = lag.secs
-	if delay > atraso and check_delay==True:
-		return
-	try:
-		antes = time.clock()
-		cv_image = bridge.compressed_imgmsg_to_cv2(imagem, "bgr8")
-		media, centro, area = cormodule.identifica_cor(cv_image)
-		depois = time.clock()
-		cv2.imshow("Camera", cv_image)
-	except CvBridgeError as e:
-		print('ex', e)
+    now = rospy.get_rostime()
+    imgtime = imagem.header.stamp
+    lag = now-imgtime
+    delay = lag.secs
+    if delay > atraso and check_delay==True:
+        return
+    try:
+        antes = time.clock()
+        cv_image = bridge.compressed_imgmsg_to_cv2(imagem, "bgr8")
+        media, centro, area = cormodule.identifica_cor(cv_image)
+        depois = time.clock()
+        cv2.imshow("Camera", cv_image)
+    except CvBridgeError as e:
+        print('ex', e)
 
 
 
@@ -80,23 +80,23 @@ class Girando(smach.State):
         smach.State.__init__(self, outcomes=['alinhou', 'girando'])
 
     def execute(self, userdata):
-		global velocidade_saida
+        global velocidade_saida
 
-		if media is None or len(media)==0:
-			return 'girando'
+        if media is None or len(media)==0:
+            return 'girando'
 
-		if  math.fabs(media[0]) > math.fabs(centro[0] + tolerancia_x):
-			vel = Twist(Vector3(0, 0, 0), Vector3(0, 0, -ang_speed))
-			velocidade_saida.publish(vel)
-			return 'girando'
-		if math.fabs(media[0]) < math.fabs(centro[0] - tolerancia_x):
-			vel = Twist(Vector3(0, 0, 0), Vector3(0, 0, ang_speed))
-			velocidade_saida.publish(vel)
-			return 'girando'
-		else:
-			vel = Twist(Vector3(0, 0, 0), Vector3(0, 0, 0))
-			velocidade_saida.publish(vel)
-			return 'alinhou'
+        if  math.fabs(media[0]) > math.fabs(centro[0] + tolerancia_x):
+            vel = Twist(Vector3(0, 0, 0), Vector3(0, 0, -ang_speed))
+            velocidade_saida.publish(vel)
+            return 'girando'
+        if math.fabs(media[0]) < math.fabs(centro[0] - tolerancia_x):
+            vel = Twist(Vector3(0, 0, 0), Vector3(0, 0, ang_speed))
+            velocidade_saida.publish(vel)
+            return 'girando'
+        else:
+            vel = Twist(Vector3(0, 0, 0), Vector3(0, 0, 0))
+            velocidade_saida.publish(vel)
+            return 'alinhou'
 
 # Se o valor da média(centro de todos os pontos) está entre o valor do centro da visão do robo e a tolerancia então o robo alinha
 
@@ -107,62 +107,62 @@ class Centralizado(smach.State):
         smach.State.__init__(self, outcomes=['alinhando', 'alinhado'])
 
     def execute(self, userdata):
-		global velocidade_saida
+        global velocidade_saida
 
-		#Aqui verificamos qual objeto esta na tela, dando prioridade para o simbolo do corinthians
-		#A velocidade muda de acordo com o objeto na tela
-		if coringao == True:
-			velocidade_reta = Vector3(1,0,0)
-		elif caixa_cor == True:
-			velocidade_reta = Vector3(-1,0,0)
-		else:
-			velocidade_reta = Vector3(0,0,0)
+        #Aqui verificamos qual objeto esta na tela, dando prioridade para o simbolo do corinthians
+        #A velocidade muda de acordo com o objeto na tela
+        if coringao == True:
+            velocidade_reta = Vector3(1,0,0)
+        elif caixa_cor == True:
+            velocidade_reta = Vector3(-1,0,0)
+        else:
+            velocidade_reta = Vector3(0,0,0)
 
-		if media is None:
-			return 'alinhou'
-		if  math.fabs(media[0]) > math.fabs(centro[0] + tolerancia_x):
-			return 'alinhando'
-		if math.fabs(media[0]) < math.fabs(centro[0] - tolerancia_x):
-			return 'alinhando'
-		else:
-			vel = Twist(velocidade_reta, Vector3(0, 0, 0))
-			velocidade_saida.publish(vel)
-			return 'alinhado'
+        if media is None:
+            return 'alinhou'
+        if  math.fabs(media[0]) > math.fabs(centro[0] + tolerancia_x):
+            return 'alinhando'
+        if math.fabs(media[0]) < math.fabs(centro[0] - tolerancia_x):
+            return 'alinhando'
+        else:
+            vel = Twist(velocidade_reta, Vector3(0, 0, 0))
+            velocidade_saida.publish(vel)
+            return 'alinhado'
 
 # main - executa tudo
 def main():
-	global velocidade_saida
-	global buffer
-	rospy.init_node('cor_estados')
+    global velocidade_saida
+    global buffer
+    rospy.init_node('cor_estados')
 
-	# Para usar a webcam
-	#recebedor = rospy.Subscriber("/cv_camera/image_raw/compressed", CompressedImage, roda_todo_frame, queue_size=1, buff_size = 2**24)
-	recebedor = rospy.Subscriber("/raspicam_node/image/compressed", CompressedImage, roda_todo_frame, queue_size=10, buff_size = 2**24)
+    # Para usar a webcam
+    #recebedor = rospy.Subscriber("/cv_camera/image_raw/compressed", CompressedImage, roda_todo_frame, queue_size=1, buff_size = 2**24)
+    recebedor = rospy.Subscriber("/raspicam_node/image/compressed", CompressedImage, roda_todo_frame, queue_size=10, buff_size = 2**24)
 
-	velocidade_saida = rospy.Publisher("/cmd_vel", Twist, queue_size = 1)
+    velocidade_saida = rospy.Publisher("/cmd_vel", Twist, queue_size = 1)
 
-	# Create a SMACH state machine
-	sm = smach.StateMachine(outcomes=['terminei'])
+    # Create a SMACH state machine
+    sm = smach.StateMachine(outcomes=['terminei'])
 
-	# Open the container
-	with sm:
-	    # Add states to the container
-	    #smach.StateMachine.add('LONGE', Longe(),
-	    #                       transitions={'ainda_longe':'ANDANDO',
-	    #                                    'perto':'terminei'})
-	    #smach.StateMachine.add('ANDANDO', Andando(),
-	    #                       transitions={'ainda_longe':'LONGE'})
-	    smach.StateMachine.add('GIRANDO', Girando(),
-	                            transitions={'girando': 'GIRANDO',
-	                            'alinhou':'CENTRO'})
-	    smach.StateMachine.add('CENTRO', Centralizado(),
-	                            transitions={'alinhando': 'GIRANDO',
-	                            'alinhado':'CENTRO'})
+    # Open the container
+    with sm:
+        # Add states to the container
+        #smach.StateMachine.add('LONGE', Longe(),
+        #                       transitions={'ainda_longe':'ANDANDO',
+        #                                    'perto':'terminei'})
+        #smach.StateMachine.add('ANDANDO', Andando(),
+        #                       transitions={'ainda_longe':'LONGE'})
+        smach.StateMachine.add('GIRANDO', Girando(),
+                                transitions={'girando': 'GIRANDO',
+                                'alinhou':'CENTRO'})
+        smach.StateMachine.add('CENTRO', Centralizado(),
+                                transitions={'alinhando': 'GIRANDO',
+                                'alinhado':'CENTRO'})
 
 
-	# Execute SMACH plan
-	outcome = sm.execute()
-	#rospy.spin()
+    # Execute SMACH plan
+    outcome = sm.execute()
+    #rospy.spin()
 
 
 if __name__ == '__main__':
