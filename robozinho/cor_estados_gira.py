@@ -19,6 +19,7 @@ import smach_ros
 
 import cormodule
 import corinthians
+import sobreviencia
 
 bridge = CvBridge()
 
@@ -38,7 +39,7 @@ area_ideal = 60000 # área da distancia ideal do contorno - note que varia com a
 tolerancia_area = 20000
 
 # Atraso máximo permitido entre a imagem sair do Turbletbot3 e chegar no laptop do aluno
-atraso = 1.5
+atraso = 1.1E9
 check_delay = True # Só usar se os relógios ROS da Raspberry e do Linux desktop estiverem sincronizados
 
 
