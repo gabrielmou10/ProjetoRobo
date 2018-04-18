@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-MIN_MATCH_COUNT=10
+MIN_MATCH_COUNT=30
 
 detector= cv2.xfeatures2d.SIFT_create()
 
@@ -30,9 +30,12 @@ def procuracor(QueryImgBGR):
                 qp.append(queryKP[m.queryIdx].pt)
             tp,qp=np.float32((tp,qp))
             H,status=cv2.findHomography(tp,qp,cv2.RANSAC,3.0)
+            if H is None:
+                return (0,0) , coringao
             h,w=trainImg.shape
             trainBorder=np.float32([[[0,0],[0,h-1],[w-1,h-1],[w-1,0]]])
             queryBorder=cv2.perspectiveTransform(trainBorder,H)
+            #cv2.polylines(QueryImgBGR,[np.int32(queryBorder)],True(0,255,0),5)
             #encontrando as coordenas medias de X para poder utilizar no cor_estados_gira
             #pegamos as coordenas dos 4 pontos do quadrado em volta da figura
             x00 = queryBorder[0][0][0]

@@ -55,6 +55,8 @@ def identifica_cor(frame):
         if area > maior_contorno_area:
             maior_contorno = cnt
             maior_contorno_area = area
+            print (maior_contorno_area)
+
 
     # Encontramos o centro do contorno fazendo a média de todos seus pontos.
     if not maior_contorno is None :
