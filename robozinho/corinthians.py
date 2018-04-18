@@ -35,7 +35,7 @@ def procuracor(QueryImgBGR):
             h,w=trainImg.shape
             trainBorder=np.float32([[[0,0],[0,h-1],[w-1,h-1],[w-1,0]]])
             queryBorder=cv2.perspectiveTransform(trainBorder,H)
-            #cv2.polylines(QueryImgBGR,[np.int32(queryBorder)],True(0,255,0),5)
+            cv2.polylines(QueryImgBGR,[np.int32(queryBorder)],True,(0,255,0),5)
             #encontrando as coordenas medias de X para poder utilizar no cor_estados_gira
             #pegamos as coordenas dos 4 pontos do quadrado em volta da figura
             x00 = queryBorder[0][0][0]
@@ -47,4 +47,5 @@ def procuracor(QueryImgBGR):
             coringao = True
         else:
             media = (0,0)
+        cv2.imshow('result',QueryImgBGR)
         return media, coringao

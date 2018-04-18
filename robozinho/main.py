@@ -45,6 +45,9 @@ tolerancia_area = 20000
 atraso = 0.4E9
 check_delay = True # Só usar se os relógios ROS da Raspberry e do Linux desktop estiverem sincronizados
 
+
+f = 0
+
 #Rodandos os frames
 def roda_todo_frame(imagem):
     print("frame")
@@ -54,18 +57,22 @@ def roda_todo_frame(imagem):
     global area
     global coringao
     global caixa_cor
+    global f
+    f +=1
+
 
     now = rospy.get_rostime()
     imgtime = imagem.header.stamp
     lag = now-imgtime
-    delay = lag.secs
+    delay = lag.nsecs
     if delay > atraso and check_delay==True:
         return
     try:
         antes = time.clock()
         cv_image = bridge.compressed_imgmsg_to_cv2(imagem, "bgr8")
         media, centro, area, caixa_cor = cormodule.identifica_cor(cv_image)
-        #media_corin, coringao = corinthians.procuracor(cv_image)
+        if f%3 == 0:
+            media_corin, coringao = corinthians.procuracor(cv_image)
         media_corin = (0,0)
         if media_corin[0] != 0:
             media = media_corin
