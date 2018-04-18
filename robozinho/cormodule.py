@@ -15,6 +15,8 @@ from cv_bridge import CvBridge, CvBridgeError
 import smach
 import smach_ros
 
+area_minima = 5000
+
 
 #Função que indentifica a cor desejada
 def identifica_cor(frame):
@@ -59,7 +61,7 @@ def identifica_cor(frame):
 
 
     # Encontramos o centro do contorno fazendo a média de todos seus pontos.
-    if not maior_contorno is None :
+    if not maior_contorno is None and maior_contorno_area > area_minima:
         cv2.drawContours(frame, [maior_contorno], -1, [0, 0, 255], 5)
         maior_contorno = np.reshape(maior_contorno, (maior_contorno.shape[0], 2))
         media = maior_contorno.mean(axis=0)
