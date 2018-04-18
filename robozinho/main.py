@@ -44,22 +44,6 @@ tolerancia_area = 20000
 # Atraso máximo permitido entre a imagem sair do Turbletbot3 e chegar no laptop do aluno
 atraso = 0.4E9
 check_delay = True # Só usar se os relógios ROS da Raspberry e do Linux desktop estiverem sincronizados
-#Variaveis do corinthians.py
-N_MATCH_COUNT=10
-
-detector= cv2.xfeatures2d.SIFT_create()
-
-
-FLANN_INDEX_KDITREE=0
-flannParam=dict(algorithm=FLANN_INDEX_KDITREE,tree=5)
-flann=cv2.FlannBasedMatcher(flannParam,{})
-
-trainImg=cv2.imread("coringao.png",0)
-time.sleep(1)
-trainKP,trainDesc=detector.detectAndCompute(trainImg,None)
-
-
-
 
 #Rodandos os frames
 def roda_todo_frame(imagem):
