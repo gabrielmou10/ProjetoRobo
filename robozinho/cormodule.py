@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 # -*- coding:utf-8 -*-
 
+
 # Importando módulos necessários
 import rospy
 import numpy as np
@@ -30,11 +31,7 @@ def identifica_cor(frame):
     # do vermelho:
     frame_hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-
-    cor_menor = np.array([0, 50, 50])
-    cor_maior = np.array([8, 255, 255])
-    segmentado_cor = cv2.inRange(frame_hsv, cor_menor, cor_maior)
-
+    # Faixa de cores pro vermelho
     cor_menor = np.array([172, 50, 50])
     cor_maior = np.array([180, 255, 255])
     segmentado_cor += cv2.inRange(frame_hsv, cor_menor, cor_maior)
@@ -49,6 +46,7 @@ def identifica_cor(frame):
     #contornos, arvore = cv2.findContours(segmentado_cor.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     img_out, contornos, arvore = cv2.findContours(segmentado_cor.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
+    # Contorno da cor detectada
     maior_contorno = None
     maior_contorno_area = 0
 
@@ -57,7 +55,6 @@ def identifica_cor(frame):
         if area > maior_contorno_area:
             maior_contorno = cnt
             maior_contorno_area = area
-            print (maior_contorno_area)
 
 
     # Encontramos o centro do contorno fazendo a média de todos seus pontos.

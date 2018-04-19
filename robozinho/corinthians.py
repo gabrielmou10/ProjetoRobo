@@ -1,10 +1,11 @@
 import cv2
 import numpy as np
 
+#Mínimo para o Match
 MIN_MATCH_COUNT=30
 
+#Detectando SIFT
 detector= cv2.xfeatures2d.SIFT_create()
-
 
 FLANN_INDEX_KDITREE=0
 flannParam=dict(algorithm=FLANN_INDEX_KDITREE,tree=5)
@@ -13,11 +14,15 @@ flann=cv2.FlannBasedMatcher(flannParam,{})
 trainImg=cv2.imread("coringao.png",0)
 trainKP,trainDesc=detector.detectAndCompute(trainImg,None)
 
+
+# Função que Procura o Símbolo do corinthians
 def procuracor(QueryImgBGR):
         QueryImg=cv2.cvtColor(QueryImgBGR,cv2.COLOR_BGR2GRAY)
         queryKP,queryDesc=detector.detectAndCompute(QueryImg,None)
         matches=flann.knnMatch(queryDesc,trainDesc,k=2)
+        # Varável de estado
         coringao = False
+        # Matches
         goodMatch=[]
         for m,n in matches:
             if(m.distance < 0.75 * n.distance):
